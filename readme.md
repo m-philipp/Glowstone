@@ -36,13 +36,18 @@ blacklist i2c-bcm2708
 
 #### 2. Install Your Ruby Environment ####
 
+```
 # Install Ruby on your Raspberry Pi
-``$ sudo apt-get install ruby ruby-dev``
 
+$ sudo apt-get install ruby ruby-dev
+```
+
+```
 # Install the required Gems
-`gem install i2c`
-`gem install sinatra`
-`gem install haml`pca
+gem install i2c
+gem install sinatra
+gem install haml`pca
+```
 
 #### 3. Run it! ####
 
