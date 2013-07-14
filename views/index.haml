@@ -1,0 +1,16 @@
+%br
+
+%p Current Color is: #{r} #{g} #{b}
+
+%br
+%br
+%br
+
+%form{:name => "myForm", :action => "/", :method => "get"}
+	%input{:type => "text", :name => "r", :class => "colorForm"}
+	%input{:type => "text", :name => "g", :class => "colorForm"}
+	%input{:type => "text", :name => "b", :class => "colorForm"}
+	%input{:type => "submit", :value => "Send", :class => "button"}
+
+%br
+%br
