@@ -44,9 +44,17 @@ $ sudo apt-get install ruby ruby-dev
 
 ```
 # Install the required Gems
-gem install i2c
-gem install sinatra
-gem install haml`pca
+sudo gem install i2c
+sudo gem install sinatra
+sudo gem install haml
+
+# Optional you could install the Ruby Webserver Thin
+sudo gem install thin
+```
+
+```
+# Do some Reboot to make sure eveything is setup right.
+sudo reboot
 ```
 
 #### 3. Run it! ####
