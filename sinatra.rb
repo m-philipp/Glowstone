@@ -11,7 +11,7 @@ set :bind, '0.0.0.0'
 DEBUG = true
 
 $color = [0,0,0]
-
+trace_var :$color, proc{setCubeColor()}
 
 $cube = PCA9685.new(0x40, DEBUG)
 
@@ -26,7 +26,6 @@ get '/' do
 	g = params[:g]
 	b = params[:b]
 	if(validColors(r,g,b))
-		setCubeColor()
 		haml :index, :locals => {:r => $color[0], :g => $color[1], :b =>$color[2]}
 	else
 		haml :index, :locals => {:r => $color[0], :g => $color[1], :b =>$color[2]}
