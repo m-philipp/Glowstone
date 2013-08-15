@@ -1,9 +1,9 @@
 
-pluginList = Array.new
+$pluginList = Array.new
 
 
-Dir[File.dirname(__FILE__) + 'plugins/*.rb'].each do |file|
-	require File.basename(file, File.extname(file))
+Dir[File.dirname(__FILE__) + '/plugins/*.rb'].each do |file|
+	require_relative 'plugins/'+File.basename(file, File.extname(file))
 end
 
 
@@ -38,26 +38,7 @@ class Action
 	@color = Color.new
 	@duration = 0
 	@priority = nil
-end 
-
-# ----------------------------------------------------- #
-# Plugin File
-# ----------------------------------------------------- #
-class ExamplePlugin 
-
-	attr_reader :name
-
-	@name = "Example Plugin!"
-
-	def update()
-		return [Action.new]
-	end
-
-	def updateIntervall()
-		return 100
-	end
-	
-
 end
 
-# ----------------------------------------------------- #
+p $pluginList.length
+p $pluginList[0].name 
