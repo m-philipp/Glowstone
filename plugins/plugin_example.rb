@@ -10,11 +10,17 @@ class ExamplePlugin
 	@name
 
 	def update(parameters)
-		return [Action.new]
+		p "Called Example.update()"
+		action = Action.new
+		action.actionType = [ActionType::FADE_IN, ActionType::FADE_OUT]
+		action.color = [Color.new(255,0,0), Color.new(255,0,0)]
+		action.duration = [0.2, 0.2]
+		action.repeating = 10
+		return action
 	end
 
 	def updateIntervall()
-		return 100
+		return 2
 	end
 	
 	def initialize()
@@ -27,5 +33,6 @@ class ExamplePlugin
 end
 
 $pluginList.push(ExamplePlugin.new)
+
 
 # ----------------------------------------------------- #

@@ -1,9 +1,74 @@
 
 $pluginList = Array.new
 
+$pluginActions = Hash.new
+$mutex = Mutex.new
+
+$lastActionExecution = Hash.new
+
+$lastPluginUpdates = Hash.new
 
 Dir[File.dirname(__FILE__) + '/plugins/*.rb'].each do |file|
 	require_relative 'plugins/'+File.basename(file, File.extname(file))
+end
+
+
+
+def collectActions()
+	p "collecting Actions"
+	$pluginList.each do |plugin|
+		if(Time.now.to_i - $lastPluginUpdates[getPriority(plugin)] > plugin.updateIntervall())
+			run = true
+			timer = Time.now.to_i
+			updater = Thread.new{
+				action = plugin.update(nil) # TODO get settings
+				$mutex.synchronize{
+					$pluginActions[getPriority(plugin)] = action
+				}
+				$lastPluginUpdates[getPriority(plugin)] = Time.now.to_i
+				run = false
+			}
+			while(run)
+				sleep(0.1)
+				if (Time.now.to_i - timer > 5)
+					Thread.kill(updater)
+					p "Plugin update timedout and was killed"
+					break
+				end
+			end
+		end
+	end
+	sleep(0.1)
+	collectActions()
+end
+
+	
+
+def getPriority(plugin)
+	# TODO get the priority from backend
+	return 10
+end
+
+def runScheduler()
+	p "running Scheduler"
+	$pluginActions.each { |priority, action|
+		$mutex.synchronize{
+			if Time.now.to_i - $lastActionExecution[priority] > action.repeating and action.repeating >= 0
+				if(action.repeating == 0) 
+					action.repeating = -1
+				end
+				executeAction(action)
+				$lastActionExecution[priority] = Time.now.to_i
+			end
+		}
+	}
+	sleep(0.1)
+	runScheduler()
+end
+
+def executeAction(a)
+	# TODO implement Action execution.
+	p "----------------> exectuing Action"
 end
 
 
@@ -24,7 +89,6 @@ class Color
 	@b = 0
 	@g = 0
 
-
 	def initialize(red = 0, green = 0, blue = 0)
 		@r = red
 		@g = green 
@@ -33,12 +97,34 @@ class Color
 end
 
 class Action 
-	attr_accessor :actionType, :color, :duration
-	@actionType = ActionType::OFF
-	@color = Color.new
-	@duration = 0
+	attr_accessor :actionType, :color, :duration, :priority, :repeating
+	@actionType = Array.new
+	@color = Array.new
+	@duration = Array.new
+
+	# repeating > 0  => repeat all repeating seconds
+	# repeating == 0 => execute once
+	# repeating < 0  => don't execute
+	@repeating = -1
+	
 	@priority = nil
 end
 
-p $pluginList.length
-p $pluginList[0].name 
+# -------------------------------------------------------- #
+# Initialize Arrays and start Threads.
+# -------------------------------------------------------- #
+
+$pluginList.each do |plugin|
+	$lastActionExecution[getPriority(plugin)] = 0
+	$lastPluginUpdates[getPriority(plugin)] = 0
+end
+
+collecter = Thread.new{collectActions()}
+scheduler = Thread.new{runScheduler()}
+
+# while true can be removed if sinatra keeps running.
+while(true)
+	sleep(0.001)
+end
+
+# -------------------------------------------------------- #
