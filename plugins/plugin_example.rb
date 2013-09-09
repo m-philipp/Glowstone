@@ -1,30 +1,30 @@
 p "Example plugin is getting loaded..."
 
+require_relative '../plugin.rb'
 # ----------------------------------------------------- #
 # Plugin File
 # ----------------------------------------------------- #
-class ExamplePlugin 
+class ExamplePlugin < Plugin
 
-	attr_reader :name
 
-	@name
-
-	def update(parameters)
+	def update()
 		p "Called Example.update()"
 		action = Action.new
-		action.actionType = [ActionType::FADE_IN, ActionType::FADE_OUT]
-		action.color = [Color.new(255,0,0), Color.new(255,0,0)]
-		action.duration = [0.2, 0.2]
-		action.repeating = 10
+		action.actionType = [ActionType::ON, ActionType::OFF, ActionType::BLINK, ActionType::FADE_IN, ActionType::FADE_OUT, ActionType::PULSE]
+		action.color = [Color.new(255,0,0), Color.new(255,0,0), Color.new(255,0,0),Color.new(0,255,0),Color.new(0,255,0),Color.new(0,0,255)]
+		action.duration = [3,3,4,4,4,4]
+		action.repeating = 0
 		return action
 	end
 
 	def updateIntervall()
-		return 2
+		return 30
 	end
 	
 	def initialize()
 		@name = "Example Plugin!"
+		@fileName = "plugin_example"
+		super()
 	end
 
 	def getConfigFields()
@@ -37,6 +37,5 @@ class ExamplePlugin
 end
 
 $pluginList.push(ExamplePlugin.new)
-
 
 # ----------------------------------------------------- #
