@@ -30,6 +30,10 @@ class ExamplePlugin
 	def getConfigFields()
 		return {"Update frequency" => "timespan", "Enabled" => "bool", "Username" => "text"}
 	end
+
+	def getConfigFieldDefaults()
+		return {"Update frequency" => "10", "Enabled" => "true", "Username" => "Karl"}
+	end
 end
 
 $pluginList.push(ExamplePlugin.new)
