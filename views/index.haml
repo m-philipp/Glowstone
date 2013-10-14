@@ -1,11 +1,11 @@
 .container
 	.content
-		%p Current Color is: #{r} #{g} #{b}
-		%form{:name => "myForm", :action => "/", :method => "get"}
-			%input{:type => "text", :name => "r", :placeholder => "r"}
-			%br
-			%input{:type => "text", :name => "g"}
-			%input{:type => "text", :name => "b"}
-			%button{:type => "submit", :value => "Send", :class => "btn"} Send
+		%h1 Glowstone
+		Pluginlist:
+		%ul
+		- @plugins.each do |plugin|
+			%li 
+				= plugin
+	
 		%br
 		%br
