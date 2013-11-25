@@ -87,9 +87,10 @@ Dir[File.dirname(__FILE__) + '/plugins/*.rb'].each do |file|
 	require_relative 'plugins/'+File.basename(file, File.extname(file))
 end
 
-$cube = PCA9685.new(0x40, DEBUG)
+$cube = PCA9685.new(0x42, DEBUG)
+$cube.setPWMFreq(200)
 
-$color = Color.new(0,0,0)
+color = Color.new(0,0,0)
 trace_var :$color, proc{setCubeColor()}
 
 
@@ -124,6 +125,7 @@ def collectActions()
 			end
 		end
 	end
+	p $pluginActions
 	sleep(0.1)
 	collectActions()
 end
@@ -136,7 +138,8 @@ end
 
 def runScheduler()
 	p "running Scheduler"
-	$pluginActions.each { |priority, action|
+	$pluginActions.keys.sort.each { |priority|
+		action = $pluginActions[priority] 
 			if Time.now.to_i - $lastActionExecution[priority] > action.repeating and action.repeating >= 0
 				if(action.repeating == 0) 
 					action.repeating = -1
@@ -191,9 +194,8 @@ def doFadeIn(color, duration,direction=0)
 	start = Time.now.to_f
 	while(Time.now.to_f-start < duration)
 		factor = (Time.now.to_f-start)/duration
-/bin/bash: scheduler.rb: command not found
 		p factor
-		$color = color.multiply(factor)
+		$color = color.multiply((direction - factor).abs)
 		sleep(0.05)
 	end
 end
